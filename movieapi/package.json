@@ -1,0 +1,16 @@
+{
+    "name": "movieapi",
+    "version": "1.0.0",
+    "description": "An API to fetch movie data",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2",
+      "cors": "^2.8.5"
+    },
+    "author": "",
+    "license": "ISC"
+  }
+  

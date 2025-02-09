@@ -1,0 +1,15 @@
+
+.shows
+{
+    width: 100%;
+    background-color: #060707;
+    padding: 10px 2%;
+}
+
+.showsParent
+{
+    width: 100%;
+    /* background-color: blue; */
+    display: flex;
+    justify-content: space-between;
+}
