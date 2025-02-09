@@ -20,7 +20,7 @@ Version Control: Git & GitHub
 bash
 Copy
 Edit
-git clone https://github.com/your-username/movie-hub.git
+git clone  https://github.com/Sharan630/Movies-Hub.git
 cd movie-hub
 
 2️⃣ Install Dependencies
