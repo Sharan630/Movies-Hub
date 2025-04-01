@@ -44,16 +44,23 @@ const App = () => {
     <Router>
       <div className="app">
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/movies" element={<Movies />} />
-          <Route path="/tv-shows" element={<TVShows />} />
-          <Route path="/search" element={<SearchResults />} />
-          <Route path="/:type/:id" element={<Details />} />
-        </Routes>
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/movies" element={<Movies />} />
+            <Route path="/tv-shows" element={<TVShows />} />
+            <Route path="/search" element={<SearchResults />} />
+            <Route path="/:type/:id" element={<Details />} />
+          </Routes>
+        </main>
         <footer className="footer">
-          <p>&copy; 2025 Movie Sphere. All rights reserved.</p>
-          <p>Powered by Sharan sai</p>
+          <div className="footer-content">
+            <div className="footer-info">
+              <p>&copy; 2025 Movie Sphere. All rights reserved.</p>
+              <p>Your ultimate destination for discovering and exploring movies and TV shows. We provide comprehensive information, ratings, and reviews to help you make informed entertainment choices.</p>
+                <p>Powered by @Sharan sai</p>
+            </div>
+          </div>
         </footer>
       </div>
     </Router>

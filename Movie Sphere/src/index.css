@@ -1,11 +1,14 @@
-*
-{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
+  --primary: #01b4e4;
+  --primary-dark: #0099cc;
+  --secondary: #90cea1;
+  --background: #000000;
+  --surface: #141414;
+  --text: #ffffff;
+  --text-secondary: #666666;
+  --error: #ff4444;
   --primary-color: #007bff;
   --primary-color-dark: #0056b3;
   --primary-rgb: 0, 123, 255;
@@ -13,9 +16,7 @@
   --light-text: #6c757d;
   --white: #ffffff;
   --border-color: #e9ecef;
-  --secondary-color: #6c757d;
   --background-color: #1a1a1a;
-  --text-color: #ffffff;
   --error-color: #dc3545;
   --success-color: #28a745;
   --border-radius: 8px;
@@ -28,7 +29,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: var(--background-color);
+  background-color: var(--background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -36,12 +37,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--background-color);
-  color: var(--text-color);
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background);
+  color: var(--text);
   line-height: 1.5;
   min-height: 100vh;
 }
@@ -86,35 +91,27 @@ img {
 /* Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background-color);
+  background: var(--surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--text-secondary);
+  background: var(--primary);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-color);
+  background: var(--primary-dark);
 }
 
 /* Loading Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
+@keyframes spin {
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: rotate(360deg);
   }
-}
-
-.fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
 }
 
 .error-container {
@@ -125,18 +122,18 @@ img {
   min-height: 100vh;
   padding: 2rem;
   text-align: center;
-  background-color: var(--background-color);
+  background-color: var(--background);
 }
 
 .error-container h1 {
-  color: var(--error-color);
+  color: var(--error);
   margin-bottom: 1rem;
   font-size: 2rem;
 }
 
 .error-container p {
   margin-bottom: 2rem;
-  color: var(--text-color);
+  color: var(--text);
 }
 
 .error-container button {
