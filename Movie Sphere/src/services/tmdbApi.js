@@ -5,7 +5,13 @@ const handleResponse = async (response) => {
         const error = await response.json();
         throw new Error(error.status_message || 'An error occurred while fetching data');
     }
-    return response.json();
+    const data = await response.json();
+    
+    if (!data) {
+        throw new Error('No data received from the server');
+    }
+    
+    return data;
 };
 
 // Movie APIs
@@ -38,6 +44,9 @@ export const getUpcomingMovies = async (page = 1) => {
 };
 
 export const getMovieDetails = async (movieId) => {
+    if (!movieId) {
+        throw new Error('Movie ID is required');
+    }
     const response = await fetch(
         `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`
     );
@@ -45,8 +54,11 @@ export const getMovieDetails = async (movieId) => {
 };
 
 export const searchMovies = async (query, page = 1) => {
+    if (!query) {
+        throw new Error('Search query is required');
+    }
     const response = await fetch(
-        `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`
+        `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}&language=en-US`
     );
     return handleResponse(response);
 };

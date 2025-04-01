@@ -20,7 +20,7 @@ const SearchResults = () => {
       return;
     }
     fetchResults();
-  }, [query]);
+  }, [query, navigate]);
 
   const fetchResults = async (pageNum = 1) => {
     try {
@@ -32,10 +32,13 @@ const SearchResults = () => {
         setResults(prev => pageNum === 1 ? response.results : [...prev, ...response.results]);
         setPage(pageNum);
         setHasMore(response.page < response.total_pages);
+      } else {
+        setError('No results found');
+        setResults([]);
       }
     } catch (err) {
       console.error('Error fetching search results:', err);
-      setError('Failed to fetch search results. Please try again.');
+      setError(err.message || 'Failed to fetch search results. Please try again.');
       setResults([]);
     } finally {
       setLoading(false);
@@ -43,7 +46,7 @@ const SearchResults = () => {
   };
 
   const loadMore = async () => {
-    if (loadingMore) return;
+    if (loadingMore || !hasMore) return;
     
     try {
       setLoadingMore(true);
@@ -56,13 +59,18 @@ const SearchResults = () => {
     }
   };
 
+  const handleRetry = () => {
+    setError(null);
+    fetchResults();
+  };
+
   if (error) {
     return (
       <div className="main-content">
         <div className="container">
           <div className="error-container">
             <div className="error">{error}</div>
-            <button className="retry-button" onClick={() => fetchResults()}>
+            <button className="retry-button" onClick={handleRetry}>
               Try Again
             </button>
           </div>
@@ -76,11 +84,17 @@ const SearchResults = () => {
       <div className="container">
         <h2 className="section-title">Search Results for "{query}"</h2>
         {loading ? (
-          <div className="loading">Searching...</div>
+          <div className="loading">
+            <i className="fas fa-spinner fa-spin"></i>
+            <p>Searching for movies...</p>
+          </div>
         ) : results.length === 0 ? (
           <div className="no-results">
             <i className="fas fa-search"></i>
-            <p>No movies found. Try a different search.</p>
+            <p>No movies found for "{query}". Try a different search.</p>
+            <button className="retry-button" onClick={() => navigate('/')}>
+              Back to Home
+            </button>
           </div>
         ) : (
           <>
@@ -121,7 +135,13 @@ const SearchResults = () => {
                   onClick={loadMore}
                   disabled={loadingMore}
                 >
-                  {loadingMore ? 'Loading...' : 'Load More'}
+                  {loadingMore ? (
+                    <>
+                      <i className="fas fa-spinner fa-spin"></i> Loading...
+                    </>
+                  ) : (
+                    'Load More'
+                  )}
                 </button>
               </div>
             )}

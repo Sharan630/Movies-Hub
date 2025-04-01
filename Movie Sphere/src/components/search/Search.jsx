@@ -23,13 +23,8 @@ const Search = () => {
         try {
             setLoading(true);
             setError('');
-            const response = await searchMovies(query.trim());
-            navigate('/search', { 
-                state: { 
-                    results: response.results || [], 
-                    query: query.trim() 
-                } 
-            });
+            
+            navigate(`/search?q=${encodeURIComponent(query.trim())}`);
         } catch (err) {
             setError('Failed to search. Please try again.');
             setTimeout(() => {
@@ -40,6 +35,12 @@ const Search = () => {
         }
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleSubmit(e);
+        }
+    };
+
     return (
         <div className="search-container">
             <form onSubmit={handleSubmit} className="search-form">
@@ -47,6 +48,7 @@ const Search = () => {
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
+                    onKeyPress={handleKeyPress}
                     placeholder="Search for movies..."
                     className="search-input"
                     disabled={loading}
