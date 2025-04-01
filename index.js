@@ -1,34 +1,59 @@
+const express = require('express');
 const tmdbApi = require('./utils/tmdbApi');
+require('dotenv').config();
 
-async function testTMDBAPI() {
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(express.json());
+
+// Get popular movies
+app.get('/api/movies/popular', async (req, res) => {
     try {
-        console.log('Fetching popular movies...');
-        const popularMovies = await tmdbApi.getPopularMovies(1);
-        console.log('\nPopular Movies:');
-        popularMovies.results.slice(0, 5).forEach(movie => {
-            console.log(`- ${movie.title} (${movie.release_date})`);
-        });
-
-        console.log('\nSearching for "Inception"...');
-        const searchResults = await tmdbApi.searchMovies('Inception');
-        if (searchResults.results.length > 0) {
-            const inception = searchResults.results[0];
-            console.log(`Found: ${inception.title} (${inception.release_date})`);
-            
-            console.log('\nFetching movie details...');
-            const movieDetails = await tmdbApi.getMovieDetails(inception.id);
-            console.log(`Overview: ${movieDetails.overview}`);
-            
-            console.log('\nFetching movie credits...');
-            const credits = await tmdbApi.getMovieCredits(inception.id);
-            console.log('Top 3 Cast Members:');
-            credits.cast.slice(0, 3).forEach(actor => {
-                console.log(`- ${actor.name} as ${actor.character}`);
-            });
-        }
+        const page = parseInt(req.query.page) || 1;
+        const movies = await tmdbApi.getPopularMovies(page);
+        res.json(movies);
     } catch (error) {
-        console.error('Error:', error.message);
+        res.status(500).json({ error: error.message });
     }
-}
+});
 
-testTMDBAPI(); 
+// Search movies
+app.get('/api/movies/search', async (req, res) => {
+    try {
+        const query = req.query.q;
+        if (!query) {
+            return res.status(400).json({ error: 'Search query is required' });
+        }
+        const results = await tmdbApi.searchMovies(query);
+        res.json(results);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get movie details
+app.get('/api/movies/:id', async (req, res) => {
+    try {
+        const movieId = req.params.id;
+        const details = await tmdbApi.getMovieDetails(movieId);
+        res.json(details);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get movie credits
+app.get('/api/movies/:id/credits', async (req, res) => {
+    try {
+        const movieId = req.params.id;
+        const credits = await tmdbApi.getMovieCredits(movieId);
+        res.json(credits);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+}); 
