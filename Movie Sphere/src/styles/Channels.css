@@ -1,0 +1,151 @@
+.channels-section {
+    padding: 2rem 0;
+    background-color: var(--background-color);
+}
+
+.channels-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+.channels-carousel {
+    display: flex;
+    gap: 1rem;
+    overflow: hidden;
+    padding: 1rem 0;
+    scroll-behavior: smooth;
+}
+
+.channel-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 120px;
+    padding: 1rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    cursor: pointer;
+    opacity: 0.7;
+    transform: scale(0.9);
+}
+
+.channel-item.active {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.channel-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-color);
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+}
+
+.genre-icon {
+    font-size: 1.5rem;
+}
+
+.channel-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    box-shadow: var(--box-shadow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    z-index: 2;
+}
+
+.carousel-button:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.carousel-button.prev {
+    left: 0;
+}
+
+.carousel-button.next {
+    right: 0;
+}
+
+.arrow {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Loading state */
+.loading {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+}
+
+/* Error state */
+.error {
+    text-align: center;
+    padding: 2rem;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    color: var(--error-color);
+    font-size: 1.1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .channels-container {
+        padding: 0 0.5rem;
+    }
+
+    .channel-item {
+        min-width: 100px;
+        padding: 0.75rem;
+    }
+
+    .channel-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .genre-icon {
+        font-size: 1.2rem;
+    }
+
+    .channel-name {
+        font-size: 0.8rem;
+    }
+
+    .carousel-button {
+        width: 35px;
+        height: 35px;
+    }
+} 

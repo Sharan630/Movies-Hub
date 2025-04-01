@@ -1,0 +1,157 @@
+.genres-container {
+  padding: 20px 0;
+}
+
+.genres-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+.genres-list {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 10px 20px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+}
+
+.genres-list::-webkit-scrollbar {
+  display: none;
+}
+
+.genre-card {
+  min-width: 160px;
+  height: 90px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  overflow: hidden;
+  position: relative;
+}
+
+.genre-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(31, 128, 224, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.genre-card:hover::before {
+  opacity: 1;
+}
+
+.genre-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(31, 128, 224, 0.2);
+  border-color: rgba(31, 128, 224, 0.3);
+}
+
+.genre-card.active {
+  background: linear-gradient(135deg, rgba(31, 128, 224, 0.2), rgba(31, 128, 224, 0.1));
+  border-color: #1f80e0;
+}
+
+.genre-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.genre-card i {
+  font-size: 24px;
+  color: #ffffff;
+  margin-bottom: 8px;
+  transition: transform 0.3s ease;
+}
+
+.genre-card:hover i {
+  transform: scale(1.1);
+}
+
+.genre-name {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.genres-loading {
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+}
+
+.genres-error {
+  color: #ff6b6b;
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .genres-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .genre-card {
+    min-width: 140px;
+    height: 80px;
+  }
+
+  .genre-content {
+    padding: 12px;
+  }
+
+  .genre-card i {
+    font-size: 20px;
+  }
+
+  .genre-name {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .genres-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .genre-card {
+    min-width: 120px;
+    height: 70px;
+  }
+
+  .genre-content {
+    padding: 10px;
+  }
+
+  .genre-card i {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+
+  .genre-name {
+    font-size: 12px;
+  }
+} 
