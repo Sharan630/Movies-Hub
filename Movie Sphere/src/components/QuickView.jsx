@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import WatchlistButton from './WatchlistButton';
 import './QuickView.css';
 
 const QuickView = ({ item, onClose }) => {
@@ -59,10 +60,7 @@ const QuickView = ({ item, onClose }) => {
                 View Details
                 <i className="fas fa-arrow-right"></i>
               </Link>
-              <button className="quick-view-button secondary">
-                <i className="fas fa-plus"></i>
-                Add to Watchlist
-              </button>
+              <WatchlistButton item={item} />
             </div>
           </div>
         </div>

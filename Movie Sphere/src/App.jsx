@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Movies from './pages/Movies';
 import TVShows from './pages/TVShows';
 import SearchResults from './pages/SearchResults';
+import Watchlist from './pages/Watchlist';
 import Details from './components/details/Details';
 import './App.css';
 
@@ -87,6 +88,7 @@ const Navbar = () => {
           <Link to="/" className={`nav-link ${isActive('/')}`}>Home</Link>
           <Link to="/movies" className={`nav-link ${isActive('/movies')}`}>Movies</Link>
           <Link to="/tv-shows" className={`nav-link ${isActive('/tv-shows')}`}>TV Shows</Link>
+          <Link to="/watchlist" className={`nav-link ${isActive('/watchlist')}`}>Watchlist</Link>
         </div>
         
         <div className="nav-right">
@@ -122,6 +124,7 @@ const App = () => {
             <Route path="/movies" element={<Movies />} />
             <Route path="/tv-shows" element={<TVShows />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/watchlist" element={<Watchlist />} />
             <Route path="/:type/:id" element={<Details />} />
           </Routes>
         </main>
