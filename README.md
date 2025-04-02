@@ -1,84 +1,115 @@
-📌 Movie Hub - A Streaming Platform Clone
+# 🎬 Movie Sphere
 
-A sleek and responsive movie streaming platform inspired by JioCinema.
+A modern, responsive web application for exploring movies and TV shows using the TMDB (The Movie Database) API. Built with React and styled with modern CSS.
 
-✨ Features
-✅ Browse and stream a variety of movies & TV shows
-✅ Modern and responsive UI built with React
-✅ Interactive carousel and category-based browsing
-✅ Dynamic search functionality for movies & TV shows
-✅ Backend API to fetch and serve movie data
+![Movie Sphere](https://via.placeholder.com/800x400?text=Movie+Sphere+Screenshot)
 
-🛠️ Tech Stack
-Frontend: React, Vite, CSS Modules
-Backend: Node.js, Express
-Database: JSON (for mock data)
-Version Control: Git & GitHub
+## 🌟 Features
 
-🚀 Installation & Setup
-1️⃣ Clone the Repository
-bash
-Copy
-Edit
-git clone  https://github.com/Sharan630/Movies-Hub.git
-cd movie-hub
+- 🎯 Real-time movie and TV show search
+- 📱 Fully responsive design for all devices
+- 🎨 Modern and intuitive user interface
+- 📊 Detailed movie and TV show information
+- ⭐ Ratings and reviews
+- 🎭 Cast and crew information
+- 🎥 Movie trailers and videos
+- 🔍 Advanced search functionality
+- 📱 Mobile-first approach
+- 🌙 Dark mode support
 
-2️⃣ Install Dependencies
-Frontend
-bash
-Copy
-Edit
-cd Movie-Sphere
-npm install
-Backend
-bash
-Copy
-Edit
-cd movieapi
-npm install
+## 🚀 Tech Stack
 
-3️⃣ Run the Project
-Start Backend Server
-bash
-Copy
-Edit
-cd movieapi
-npm start
-Start Frontend
-bash
-Copy
-Edit
-cd Movie-Sphere
-npm run dev
+- **Frontend Framework:** React.js
+- **Routing:** React Router v6
+- **Styling:** CSS3 with Flexbox and Grid
+- **API:** TMDB (The Movie Database)
+- **Icons:** Font Awesome
+- **State Management:** React Hooks
+- **HTTP Client:** Fetch API
 
-📷 Screenshots
-Home Page	Movie Details	Search Page
-![image](https://github.com/user-attachments/assets/2f281d0c-ff91-47f5-b5b6-4eb301c140bb)
-![image](https://github.com/user-attachments/assets/082f35ac-423e-4e91-a897-542939f472eb)
-![image](https://github.com/user-attachments/assets/0de30a33-1d62-4268-b51c-dcc40f85a597)
+## 📦 Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/movie-sphere.git
+   ```
+
+2. Navigate to the project directory:
+   ```bash
+   cd movie-sphere
+   ```
+
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+4. Create a `.env` file in the root directory and add your TMDB API key:
+   ```
+   VITE_TMDB_API_KEY=your_api_key_here
+   ```
+
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## 🔧 Configuration
+
+The application requires the following environment variables:
+
+- `VITE_TMDB_API_KEY`: Your TMDB API key
+- `VITE_TMDB_BASE_URL`: TMDB API base URL (default: https://api.themoviedb.org/3)
+
+## 🎯 Usage
+
+1. **Home Page**
+   - Browse popular movies and TV shows
+   - Access different categories and genres
+   - Quick access to trending content
+
+2. **Search Functionality**
+   - Real-time search for movies and TV shows
+   - Advanced filtering options
+   - Pagination support for search results
+
+3. **Movie/TV Show Details**
+   - Comprehensive information about selected content
+   - Cast and crew details
+   - Reviews and ratings
+   - Related content suggestions
+
+## 📱 Responsive Design
+
+The application is fully responsive and optimized for:
+- Mobile devices (320px and up)
+- Tablets (768px and up)
+- Desktop screens (1024px and up)
+- Large displays (1440px and up)
+
+## 🔍 API Endpoints
+
+The application uses the following TMDB API endpoints:
+
+- `/movie/popular` - Get popular movies
+- `/movie/top_rated` - Get top-rated movies
+- `/movie/upcoming` - Get upcoming movies
+- `/search/movie` - Search for movies
+- `/movie/{id}` - Get movie details
+- `/movie/{id}/credits` - Get movie credits
+- `/movie/{id}/videos` - Get movie videos
+- `/movie/{id}/reviews` - Get movie reviews
+- `/movie/{id}/similar` - Get similar movies
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 
-
-📌 Folder Structure
-pgsql
-Copy
-Edit
-Movie Hub/
-│── Movie-Sphere/  # Frontend
-│   ├── src/
-│   ├── public/
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.js
-│── movieapi/  # Backend
-│   ├── index.js
-│   ├── movies_data.json
-│   ├── package.json
-│── .gitignore
-│── README.md
-🤝 Contributing
-Feel free to submit issues and pull requests. Contributions are always welcome!
-
-📜 License
-This project is open-source and available under the MIT License.
 

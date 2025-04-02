@@ -1,15 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Hero from '../components/hero/Hero';
 import Channels from '../components/channels/Channels';
 import Genres from '../components/genres/Genres';
-import { getPopularMovies, getPopularShows, getMoviesByGenre } from '../services/tmdbApi';
+import MovieSkeleton from '../components/skeleton/MovieSkeleton';
+import { getPopularMovies, getPopularShows, getMoviesByGenre, getMovieDetails, getShowDetails } from '../services/tmdbApi';
 import '../App.css';
 import './Home.css';
 import { useNavigate } from 'react-router-dom';
+import FeaturedCarousel from '../components/FeaturedCarousel';
+import TrendingSection from '../components/TrendingSection';
+import QuickView from '../components/QuickView';
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
   const [shows, setShows] = useState([]);
+  const [featuredMovies, setFeaturedMovies] = useState([]);
+  const [trendingMovies, setTrendingMovies] = useState([]);
+  const [trendingShows, setTrendingShows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedGenre, setSelectedGenre] = useState(null);
@@ -19,10 +26,23 @@ const Home = () => {
   const [hasMoreShows, setHasMoreShows] = useState(true);
   const [loadingMoreMovies, setLoadingMoreMovies] = useState(false);
   const [loadingMoreShows, setLoadingMoreShows] = useState(false);
+  const [genres] = useState([
+    { id: 28, name: "Action" },
+    { id: 12, name: "Adventure" },
+    { id: 16, name: "Animation" },
+    { id: 35, name: "Comedy" },
+    { id: 80, name: "Crime" },
+    { id: 18, name: "Drama" },
+    { id: 10751, name: "Family" },
+    { id: 14, name: "Fantasy" },
+    { id: 36, name: "History" }
+  ]);
+  const [quickViewItem, setQuickViewItem] = useState(null);
+  const loadMoreMoviesRef = useRef(null);
+  const loadMoreShowsRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('Fetching initial content...');
     fetchInitialContent();
   }, []);
 
@@ -30,23 +50,22 @@ const Home = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('Making API calls...');
       
       const [moviesResponse, showsResponse] = await Promise.all([
         getPopularMovies(1),
         getPopularShows(1)
       ]);
 
-      console.log('Movies response:', moviesResponse);
-      console.log('Shows response:', showsResponse);
-
       if (moviesResponse?.results) {
         setMovies(moviesResponse.results);
         setHasMoreMovies(moviesResponse.page < moviesResponse.total_pages);
+        setFeaturedMovies(moviesResponse.results.slice(0, 5));
+        setTrendingMovies(moviesResponse.results.slice(5, 15));
       }
       if (showsResponse?.results) {
         setShows(showsResponse.results);
         setHasMoreShows(showsResponse.page < showsResponse.total_pages);
+        setTrendingShows(showsResponse.results.slice(0, 10));
       }
     } catch (err) {
       console.error('Error fetching content:', err);
@@ -58,9 +77,9 @@ const Home = () => {
     }
   };
 
-  const handleGenreClick = async (genre) => {
+  const handleGenreClick = async (genreId) => {
     try {
-      if (selectedGenre?.id === genre.id) {
+      if (selectedGenre === genreId) {
         setSelectedGenre(null);
         setMoviePage(1);
         return fetchInitialContent();
@@ -68,10 +87,10 @@ const Home = () => {
 
       setLoading(true);
       setError(null);
-      setSelectedGenre(genre);
+      setSelectedGenre(genreId);
       setMoviePage(1);
       
-      const response = await getMoviesByGenre(genre.id, 1);
+      const response = await getMoviesByGenre(genreId, 1);
       if (response?.results) {
         setMovies(response.results);
         setHasMoreMovies(response.page < response.total_pages);
@@ -85,14 +104,44 @@ const Home = () => {
     }
   };
 
-  const loadMoreMovies = async () => {
-    if (loadingMoreMovies) return;
+  const handleQuickView = async (item) => {
+    try {
+      const isMovie = !!item.title;
+      
+      let detailedItem;
+      if (isMovie) {
+        const details = await getMovieDetails(item.id);
+        detailedItem = { ...details, media_type: 'movie' };
+      } else {
+        const details = await getShowDetails(item.id);
+        detailedItem = { 
+          ...details, 
+          media_type: 'tv',
+          title: details.name,
+          release_date: details.first_air_date
+        };
+      }
+      
+      setQuickViewItem(detailedItem);
+    } catch (error) {
+      console.error('Error fetching item details:', error);
+      setQuickViewItem({ 
+        ...item, 
+        media_type: item.title ? 'movie' : 'tv',
+        title: item.title || item.name,
+        release_date: item.release_date || item.first_air_date
+      });
+    }
+  };
+
+  const loadMoreMovies = useCallback(async () => {
+    if (loadingMoreMovies || !hasMoreMovies) return;
     
     try {
       setLoadingMoreMovies(true);
       const nextPage = moviePage + 1;
       const response = selectedGenre 
-        ? await getMoviesByGenre(selectedGenre.id, nextPage)
+        ? await getMoviesByGenre(selectedGenre, nextPage)
         : await getPopularMovies(nextPage);
 
       if (response?.results) {
@@ -102,14 +151,13 @@ const Home = () => {
       }
     } catch (err) {
       console.error('Error loading more movies:', err);
-      setError('Failed to load more movies. Please try again.');
     } finally {
       setLoadingMoreMovies(false);
     }
-  };
+  }, [moviePage, selectedGenre, loadingMoreMovies, hasMoreMovies]);
 
-  const loadMoreShows = async () => {
-    if (loadingMoreShows) return;
+  const loadMoreShows = useCallback(async () => {
+    if (loadingMoreShows || !hasMoreShows) return;
     
     try {
       setLoadingMoreShows(true);
@@ -123,11 +171,46 @@ const Home = () => {
       }
     } catch (err) {
       console.error('Error loading more shows:', err);
-      setError('Failed to load more shows. Please try again.');
     } finally {
       setLoadingMoreShows(false);
     }
-  };
+  }, [showPage, loadingMoreShows, hasMoreShows]);
+
+  useEffect(() => {
+    const moviesObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMoreMovies && !loadingMoreMovies) {
+          loadMoreMovies();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const showsObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMoreShows && !loadingMoreShows) {
+          loadMoreShows();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreMoviesRef.current) {
+      moviesObserver.observe(loadMoreMoviesRef.current);
+    }
+    if (loadMoreShowsRef.current) {
+      showsObserver.observe(loadMoreShowsRef.current);
+    }
+
+    return () => {
+      if (loadMoreMoviesRef.current) {
+        moviesObserver.unobserve(loadMoreMoviesRef.current);
+      }
+      if (loadMoreShowsRef.current) {
+        showsObserver.unobserve(loadMoreShowsRef.current);
+      }
+    };
+  }, [loadMoreMovies, loadMoreShows, hasMoreMovies, hasMoreShows, loadingMoreMovies, loadingMoreShows]);
 
   const renderContent = (items, type) => {
     if (items.length === 0) {
@@ -143,7 +226,7 @@ const Home = () => {
             return (
               <div 
                 key={item.id} 
-                className="movie-card"
+                className="movie-card fade-in"
                 onClick={() => navigate(`/${type}/${item.id}`)}
                 style={{ cursor: 'pointer' }}
               >
@@ -172,81 +255,180 @@ const Home = () => {
           })}
         </div>
         {type === 'movie' ? (
-          hasMoreMovies && (
-            <div className="load-more-container">
-              <button 
-                className="load-more-button"
-                onClick={loadMoreMovies}
-                disabled={loadingMoreMovies}
-              >
-                {loadingMoreMovies ? 'Loading...' : 'Load More Movies'}
-              </button>
-            </div>
-          )
+          <div ref={loadMoreMoviesRef} className="load-more-trigger">
+            {loadingMoreMovies && <MovieSkeleton />}
+          </div>
         ) : (
-          hasMoreShows && (
-            <div className="load-more-container">
-              <button 
-                className="load-more-button"
-                onClick={loadMoreShows}
-                disabled={loadingMoreShows}
-              >
-                {loadingMoreShows ? 'Loading...' : 'Load More Shows'}
-              </button>
-            </div>
-          )
+          <div ref={loadMoreShowsRef} className="load-more-trigger">
+            {loadingMoreShows && <MovieSkeleton />}
+          </div>
         )}
       </>
     );
   };
 
-  if (error) {
-    return (
-      <div className="main-content">
-        <Hero />
-        <div className="container">
-          <Channels />
-          <div className="error-container">
-            <div className="error">{error}</div>
-            <button className="retry-button" onClick={fetchInitialContent}>
-              Try Again
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="main-content">
-      <Hero />
-      <div className="container">
-        <Channels />
-        
-        <div className="genres-section">
-          <Genres onGenreSelect={handleGenreClick} selectedGenre={selectedGenre} />
+    <div className="home-container" style={{ width: '100vw', maxWidth: '100vw', overflow: 'hidden', backgroundColor: '#000' }}>
+      {/* Featured Carousel Section - No margin/padding at the top now */}
+      {featuredMovies && featuredMovies.length > 0 ? (
+        <section className="section" style={{ width: '100vw', maxWidth: '100vw', padding: 0, margin: 0 }}>
+          <FeaturedCarousel movies={featuredMovies} onQuickView={(movie) => setQuickViewItem({ ...movie, type: 'movie' })} />
+        </section>
+      ) : loading ? (
+        <div className="carousel-skeleton"></div>
+      ) : null}
+
+      {/* Trending Sections */}
+      {trendingMovies && trendingMovies.length > 0 ? (
+        <section className="section" style={{ width: '100vw', maxWidth: '100vw', padding: 0, margin: '2rem 0 0 0' }}>
+          <TrendingSection 
+            title="Trending Movies" 
+            items={trendingMovies} 
+            type="movie" 
+            onQuickView={(movie) => setQuickViewItem({ ...movie, type: 'movie' })} 
+          />
+        </section>
+      ) : loading ? (
+        <div className="section-skeleton"></div>
+      ) : null}
+
+      {trendingShows && trendingShows.length > 0 ? (
+        <section className="section" style={{ width: '100vw', maxWidth: '100vw', padding: 0, margin: 0 }}>
+          <TrendingSection 
+            title="Trending TV Shows" 
+            items={trendingShows} 
+            type="tv" 
+            onQuickView={(show) => setQuickViewItem({ ...show, type: 'tv' })} 
+          />
+        </section>
+      ) : loading ? (
+        <div className="section-skeleton"></div>
+      ) : null}
+
+      {/* Genres Section */}
+      <section className="section" style={{ width: '100vw', maxWidth: '100vw', padding: '1rem 2rem', margin: 0 }}>
+        <h2 className="section-title">Browse by Genre</h2>
+        <div className="genres-container">
+          {genres.map((genre) => (
+            <button 
+              key={genre.id} 
+              className={`genre-button ${selectedGenre === genre.id ? 'active' : ''}`} 
+              onClick={() => handleGenreClick(genre.id)}
+            >
+              {genre.name}
+            </button>
+          ))}
         </div>
+      </section>
 
-        <section className="movies-section">
-          <h2 className="section-title">
-            {selectedGenre ? `${selectedGenre.name} Movies` : 'Popular Movies'}
-          </h2>
-          {loading ? (
-            <div className="loading">Loading movies...</div>
-          ) : (
-            renderContent(movies, 'movie')
-          )}
-        </section>
+      {/* Movies Section */}
+      <section className="section" style={{ width: '100vw', maxWidth: '100vw', padding: '1rem 2rem', margin: 0 }}>
+        <h2 className="section-title">Popular Movies</h2>
+        {error ? (
+          <div className="error-message">Something went wrong. Please try again later.</div>
+        ) : (
+          <>
+            {movies.length > 0 ? (
+              <div className="movies-grid">
+                {movies.map((movie) => (
+                  <div className="movie-card" key={movie.id} onClick={() => setQuickViewItem({ ...movie, type: 'movie' })}>
+                    <img 
+                      src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '/placeholder.jpg'} 
+                      alt={movie.title} 
+                      className="movie-poster" 
+                    />
+                    <div className="movie-info">
+                      <h3 className="movie-title">{movie.title}</h3>
+                      <p className="movie-rating">
+                        <span className="star-icon">⭐</span> 
+                        {movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : loading ? (
+              // Skeleton UI for loading state
+              <div className="movies-grid">
+                {[...Array(8)].map((_, index) => (
+                  <div className="movie-card skeleton" key={index}>
+                    <div className="skeleton-poster"></div>
+                    <div className="skeleton-info">
+                      <div className="skeleton-title"></div>
+                      <div className="skeleton-rating"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="no-results">No movies found</div>
+            )}
 
-        <section className="shows-section">
-          <h2 className="section-title">Popular TV Shows</h2>
-          {loading ? (
-            <div className="loading">Loading TV shows...</div>
-          ) : (
-            renderContent(shows, 'tv')
-          )}
-        </section>
-      </div>
+            {/* Load More Button or Trigger for Movies */}
+            {!loading && movies.length > 0 && (
+              <div ref={loadMoreMoviesRef} className="load-more-trigger">
+                {loadingMoreMovies && <div className="loading-spinner"></div>}
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
+      {/* TV Shows Section */}
+      <section className="section" style={{ width: '100vw', maxWidth: '100vw', padding: '1rem 2rem', margin: 0 }}>
+        <h2 className="section-title">Popular TV Shows</h2>
+        {error ? (
+          <div className="error-message">Something went wrong. Please try again later.</div>
+        ) : (
+          <>
+            {shows.length > 0 ? (
+              <div className="shows-grid">
+                {shows.map((show) => (
+                  <div className="movie-card" key={show.id} onClick={() => setQuickViewItem({ ...show, type: 'tv' })}>
+                    <img 
+                      src={show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : '/placeholder.jpg'} 
+                      alt={show.name} 
+                      className="movie-poster" 
+                    />
+                    <div className="movie-info">
+                      <h3 className="movie-title">{show.name}</h3>
+                      <p className="movie-rating">
+                        <span className="star-icon">⭐</span> 
+                        {show.vote_average ? show.vote_average.toFixed(1) : 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : loading ? (
+              // Skeleton UI for loading state
+              <div className="shows-grid">
+                {[...Array(8)].map((_, index) => (
+                  <div className="movie-card skeleton" key={index}>
+                    <div className="skeleton-poster"></div>
+                    <div className="skeleton-info">
+                      <div className="skeleton-title"></div>
+                      <div className="skeleton-rating"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="no-results">No TV shows found</div>
+            )}
+
+            {/* Load More Button or Trigger for Shows */}
+            {!loading && shows.length > 0 && (
+              <div ref={loadMoreShowsRef} className="load-more-trigger">
+                {loadingMoreShows && <div className="loading-spinner"></div>}
+              </div>
+            )}
+          </>
+        )}
+      </section>
+
+      {/* Quick View Modal */}
+      {quickViewItem && <QuickView item={quickViewItem} onClose={() => setQuickViewItem(null)} />}
     </div>
   );
 };

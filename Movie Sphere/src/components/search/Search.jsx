@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { searchMovies } from '../../services/tmdbApi';
 import './Search.css';
 
-const Search = () => {
+const Search = ({ onClose }) => {
     const [query, setQuery] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -23,6 +23,10 @@ const Search = () => {
         try {
             setLoading(true);
             setError('');
+            
+            if (onClose) {
+                onClose();
+            }
             
             navigate(`/search?q=${encodeURIComponent(query.trim())}`);
         } catch (err) {
@@ -52,6 +56,7 @@ const Search = () => {
                     placeholder="Search for movies..."
                     className="search-input"
                     disabled={loading}
+                    autoFocus
                 />
                 <button type="submit" className="search-button" disabled={loading}>
                     <i className={`fas ${loading ? 'fa-spinner fa-spin' : 'fa-search'}`}></i>

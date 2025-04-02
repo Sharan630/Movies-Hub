@@ -1,0 +1,71 @@
+.watchlist-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 2px solid var(--accent-color);
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.watchlist-button i {
+  font-size: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.watchlist-button:hover {
+  background: var(--accent-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(1, 180, 228, 0.3);
+}
+
+.watchlist-button.in-watchlist {
+  background: var(--accent-color);
+  color: white;
+}
+
+.watchlist-button.in-watchlist:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.watchlist-button.animating {
+  transform: scale(0.95);
+}
+
+.watchlist-button.animating i {
+  transform: rotate(180deg);
+}
+
+.button-text {
+  transition: opacity 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .watchlist-button {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.85rem;
+  }
+
+  .watchlist-button i {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .watchlist-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .watchlist-button i {
+    font-size: 0.85rem;
+  }
+} 

@@ -24,7 +24,13 @@ export const getMovieGenres = async () => {
 
 export const getPopularMovies = async (page = 1) => {
     const response = await fetch(
-        `${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`
+        `${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`,
+        {
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
     );
     return handleResponse(response);
 };
@@ -80,7 +86,13 @@ export const getTVGenres = async () => {
 
 export const getPopularShows = async (page = 1) => {
     const response = await fetch(
-        `${BASE_URL}/tv/popular?api_key=${API_KEY}&page=${page}`
+        `${BASE_URL}/tv/popular?api_key=${API_KEY}&page=${page}`,
+        {
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
     );
     return handleResponse(response);
 };

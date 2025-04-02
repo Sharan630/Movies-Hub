@@ -1,0 +1,88 @@
+.movie-skeleton {
+  background: var(--bg-secondary);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  transition: transform var(--transition-speed) ease;
+}
+
+.movie-skeleton:hover {
+  transform: translateY(-4px);
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 25%,
+    var(--bg-primary) 50%,
+    var(--bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.poster {
+  width: 100%;
+  padding-top: 150%;
+  position: relative;
+}
+
+.skeleton-content {
+  padding: 1rem;
+}
+
+.title {
+  height: 1.5rem;
+  width: 80%;
+  margin-bottom: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.description {
+  height: 3rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+}
+
+.skeleton-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rating {
+  height: 1.25rem;
+  width: 4rem;
+  border-radius: 0.25rem;
+}
+
+.year {
+  height: 1.25rem;
+  width: 3rem;
+  border-radius: 0.25rem;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Grid layout for multiple skeletons */
+.skeleton-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .skeleton-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+} 
